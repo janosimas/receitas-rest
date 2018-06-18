@@ -12,7 +12,11 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 describe('Ingredients', () => {
-  beforeEach(async () => {  // Before each test we empty the database
+  before(async () => {  // Before tests we empty the database
+    await Ingredient.query().delete();
+  });
+
+  afterEach(async () => {  // After each test we empty the database
     await Ingredient.query().delete();
   });
 
