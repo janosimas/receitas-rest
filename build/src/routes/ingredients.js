@@ -28,31 +28,29 @@ route.get('/', (req, res) => {
 route.post('/new', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!ramda_1.default.has('body', req)
         || !ramda_1.default.has('name', req.body)) {
-        res.json({
-            err: 'Invalid ingredient name.'
+        return res.json({
+            err: 'No ingredient information provided.'
         });
-        return;
     }
     const name = req.body.name.trim();
     if (ramda_1.default.isEmpty(name)) {
-        res.json({
-            err: 'Invalid ingredient name.'
+        return res.json({
+            err: 'Empty ingredient name.'
         });
-        return;
     }
-    const hasName = yield ingredients_1.IngredientName
+    const hasName = yield ingredients_1.Ingredient
         .query()
         .select('*')
-        .whereExists;
+        .where({ name: name });
+    if (!ramda_1.default.isEmpty(hasName)) {
+        return res.json({
+            err: 'Ingredient already registered.'
+        });
+    }
     const ingredient = yield ingredients_1.Ingredient
         .query()
-        .insert({});
-    ingredients_1.IngredientName
-        .query()
-        .insert({
-        ingredientId: ingredient.id,
-        name: name
-    });
+        .insert({ name: name });
+    return res.json(ingredient);
 }));
 exports.default = (app) => {
     app.use('/ingredients', route);

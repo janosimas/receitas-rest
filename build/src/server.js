@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const morgan = require('morgan');
 const knex_1 = __importDefault(require("knex"));
 const objection_1 = require("objection");
 const config_json_1 = __importDefault(require("./config.json"));
@@ -15,6 +17,8 @@ const environment = process.env.NODE_ENV || 'development';
 const knex = knex_1.default(knexfile[environment]);
 objection_1.Model.knex(knex);
 const app = express_1.default();
+app.use(body_parser_1.default.json({ limit: config_json_1.default.bodyLimit }));
+app.use(morgan('combined'));
 app.get('/', (req, res) => {
     res.json({ version: process.env.npm_package_version });
 });
@@ -31,4 +35,5 @@ const server = app.listen(process.env.PORT || config_json_1.default.port, () => 
     }
     console.log(`Started on ${address} time : ${new Date()}`);
 });
+exports.default = app;
 //# sourceMappingURL=server.js.map

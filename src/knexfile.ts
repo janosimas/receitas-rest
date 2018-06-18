@@ -3,9 +3,7 @@
 module.exports = {
   development: {
     client: 'sqlite3',
-    connection: {
-      filename: "./mydb.sqlite"
-    },
+    connection: {filename: './mydb.sqlite'},
     migrations: {
       directory: '../migrations',
       extensions: ['.ts'],
@@ -19,9 +17,7 @@ module.exports = {
    */
   staging: {
     client: 'sqlite3',
-    connection: {
-      filename: "./mydb.sqlite"
-    },
+    connection: {filename: './mydb.sqlite'},
     migrations: {
       directory: '../migrations',
       extensions: ['.ts'],
@@ -35,9 +31,7 @@ module.exports = {
    */
   production: {
     client: 'sqlite3',
-    connection: {
-      filename: "./mydb.sqlite"
-    },
+    connection: {filename: './mydb.sqlite'},
     migrations: {
       directory: '../migrations',
       extensions: ['.ts'],

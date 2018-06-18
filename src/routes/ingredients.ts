@@ -1,13 +1,14 @@
-import { Express, Response, Request, Router } from "express";
-import { Ingredient, IngredientName } from "../models/ingredients";
+import {Request, Response, Router} from 'express';
 import R from 'ramda';
 
-const route = Router();
+import {Ingredient} from '../models/ingredients';
+
+export const route = Router();
 route.get('/', (req: Request, res: Response) => {
   if (!req.query.contains) {
     // full list of ingredients
 
-    res.json({ ingredients: 'ingredients' });
+    res.json({ingredients: 'ingredients'});
   } else {
     // autocomplete
     res.json({});
@@ -15,41 +16,19 @@ route.get('/', (req: Request, res: Response) => {
 });
 
 route.post('/new', async (req: Request, res: Response) => {
-  if (!R.has('body', req)
-    || !R.has('name', req.body)) {
-    return res.json({
-      err: 'No ingredient information provided.'
-    });
+  if (!R.has('body', req) || !R.has('name', req.body)) {
+    return res.json({err: 'No ingredient information provided.'});
   }
   const name: string = req.body.name.trim();
   if (R.isEmpty(name)) {
-    return res.json({
-      err: 'Invalid ingredient name.'
-    });
+    return res.json({err: 'Empty ingredient name.'});
   }
-  const hasName = await IngredientName
-    .query()
-    .select('*')
-    .where({ name: name });
+  const hasName = await Ingredient.query().select('*').where({name});
   if (!R.isEmpty(hasName)) {
-    return res.json({
-      err: 'Empty ingredient name.'
-    });
+    return res.json({err: 'Ingredient already registered.'});
   }
 
-  const ingredient = await Ingredient
-    .query()
-    .insert({});
-  IngredientName
-    .query()
-    .insert({
-      ingredientId: ingredient.id,
-      name: name
-    });
+  const ingredient = await Ingredient.query().insert({name});
 
   return res.json(ingredient);
 });
-
-export default (app: Express) => {
-  app.use('/ingredients', route);
-}

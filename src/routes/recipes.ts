@@ -1,14 +1,14 @@
-import { Express, Response, Request } from "express";
+import {Request, Response, Router} from 'express';
 
-export default (app: Express) => {
-  app.get('/recipes', (req: Request, res: Response) => {
-    if (!req.query.contains) {
-      // full list of recipes
+export const route = Router();
 
-      res.json({ recipes: 'recipes' });
-    } else {
-      // autocomplete
-      res.json({});
-    }
-  });
-}
+route.get('/', (req: Request, res: Response) => {
+  if (!req.query.contains) {
+    // full list of recipes
+
+    res.json({recipes: 'recipes'});
+  } else {
+    // autocomplete
+    res.json({});
+  }
+});

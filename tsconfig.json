@@ -10,8 +10,11 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": true,
-    "allowJs": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": [
+      "dom",
+      "es6"
+    ]
   },
   "include": [
     "src/*.ts",

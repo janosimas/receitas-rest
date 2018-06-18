@@ -1,13 +1,9 @@
-import { Express, Response, Request } from "express";
+import {Request, Response, Router} from 'express';
 
-export default (app: Express) => {
-  app.get('/types', (req: Request, res: Response) => {
-    res.json({
-      cooking_method: [
-        'fogão',
-        'forno',
-        'forno combinado'
-      ],
-    });
+export const route = Router();
+
+route.get('/', (req: Request, res: Response) => {
+  res.json({
+    cooking_method: ['fogão', 'forno', 'forno combinado'],
   });
-}
+});
