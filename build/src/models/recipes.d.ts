@@ -1,9 +1,9 @@
-import { Model, Relation } from "objection";
-import { Ingredient } from "./ingredients";
+import { Model, Relation } from 'objection';
+import { Ingredient } from './ingredients';
 export declare class Recipe extends Model {
     static tableName: string;
     readonly id: number;
-    ingredients: Array<Ingredient>;
+    ingredients: Ingredient[];
     cookingMethod?: string;
     static relationMappings: {
         ingredients: {

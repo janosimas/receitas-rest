@@ -14,32 +14,32 @@ import {route as recipesRoute} from './routes/recipes';
 import {route as typesRoute} from './routes/types';
 import {AddressInfo} from 'net';
 
-const knexfile = require('./knexfile');
+const knexfile = require('../knexfile');
 
 const environment = process.env.NODE_ENV || 'development';
 
 const knex = Knex(knexfile[environment]);
 Model.knex(knex);
 
-export const app = express();
+export const server = express();
 
-app.use(bodyParser.json({limit: configJson.bodyLimit}));
-app.use(morgan('combined'));
+server.use(bodyParser.json({limit: configJson.bodyLimit}));
+server.use(morgan('combined'));
 
-app.get('/', (req: Request, res: Response) => {
+server.get('/', (req: Request, res: Response) => {
   res.json({version: process.env.npm_package_version});
 });
 
-app.use('/ingredients', ingredientsRoute);
-app.use('/recipes', recipesRoute);
-app.use('/types', typesRoute);
+server.use('/ingredients', ingredientsRoute);
+server.use('/recipes', recipesRoute);
+server.use('/types', typesRoute);
 
-const server = app.listen(process.env.PORT || configJson.port, () => {
+const httpServer = server.listen(process.env.PORT || configJson.port, () => {
   let address: string;
-  if (!(server.address() instanceof String)) {
-    address = (server.address() as AddressInfo).port.toString();
+  if (!(httpServer.address() instanceof String)) {
+    address = (httpServer.address() as AddressInfo).port.toString();
   } else {
-    address = server.address() as string;
+    address = httpServer.address() as string;
   }
   console.log(`Started on ${address} time : ${new Date()}`);
 });

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+exports.config = {
     port: 8080,
     uploads: './uploads/',
     bodyLimit: '100kb',

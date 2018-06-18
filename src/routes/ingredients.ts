@@ -23,6 +23,7 @@ route.post('/new', async (req: Request, res: Response) => {
   if (R.isEmpty(name)) {
     return res.json({err: 'Empty ingredient name.'});
   }
+
   const hasName = await Ingredient.query().select('*').where({name});
   if (!R.isEmpty(hasName)) {
     return res.json({err: 'Ingredient already registered.'});

@@ -8,32 +8,31 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const morgan = require('morgan');
 const knex_1 = __importDefault(require("knex"));
 const objection_1 = require("objection");
-const config_json_1 = __importDefault(require("./config.json"));
-const ingredients_1 = __importDefault(require("./routes/ingredients"));
-const recipes_1 = __importDefault(require("./routes/recipes"));
-const types_1 = __importDefault(require("./routes/types"));
-const knexfile = require("./knexfile");
+const config_json_1 = require("./config.json");
+const ingredients_1 = require("./routes/ingredients");
+const recipes_1 = require("./routes/recipes");
+const types_1 = require("./routes/types");
+const knexfile = require('../knexfile');
 const environment = process.env.NODE_ENV || 'development';
 const knex = knex_1.default(knexfile[environment]);
 objection_1.Model.knex(knex);
-const app = express_1.default();
-app.use(body_parser_1.default.json({ limit: config_json_1.default.bodyLimit }));
-app.use(morgan('combined'));
-app.get('/', (req, res) => {
+exports.server = express_1.default();
+exports.server.use(body_parser_1.default.json({ limit: config_json_1.config.bodyLimit }));
+exports.server.use(morgan('combined'));
+exports.server.get('/', (req, res) => {
     res.json({ version: process.env.npm_package_version });
 });
-ingredients_1.default(app);
-recipes_1.default(app);
-types_1.default(app);
-const server = app.listen(process.env.PORT || config_json_1.default.port, () => {
+exports.server.use('/ingredients', ingredients_1.route);
+exports.server.use('/recipes', recipes_1.route);
+exports.server.use('/types', types_1.route);
+const httpServer = exports.server.listen(process.env.PORT || config_json_1.config.port, () => {
     let address;
-    if (!(server.address() instanceof String)) {
-        address = server.address().port;
+    if (!(httpServer.address() instanceof String)) {
+        address = httpServer.address().port.toString();
     }
     else {
-        address = server.address();
+        address = httpServer.address();
     }
     console.log(`Started on ${address} time : ${new Date()}`);
 });
-exports.default = app;
 //# sourceMappingURL=server.js.map

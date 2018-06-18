@@ -5,7 +5,7 @@ module.exports = {
         client: 'sqlite3',
         connection: { filename: './mydb.sqlite' },
         migrations: {
-            directory: '../migrations',
+            directory: './migrations',
             extensions: ['.ts'],
         },
         useNullAsDefault: true
@@ -17,7 +17,7 @@ module.exports = {
         client: 'sqlite3',
         connection: { filename: './mydb.sqlite' },
         migrations: {
-            directory: '../migrations',
+            directory: './migrations',
             extensions: ['.ts'],
         },
         useNullAsDefault: true
@@ -29,7 +29,7 @@ module.exports = {
         client: 'sqlite3',
         connection: { filename: './mydb.sqlite' },
         migrations: {
-            directory: '../migrations',
+            directory: './migrations',
             extensions: ['.ts'],
         }
     },

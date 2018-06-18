@@ -38,7 +38,7 @@
     "sqlite3": "^4.0.0"
   },
   "scripts": {
-    "test": "mocha --reporter spec --require ts-node/register 'src/test/**/*.specs.ts'",
+    "test": "mocha --reporter spec --require ts-node/register 'src/test/**/*.specs.ts' --exit",
     "start": "npm run compile && node build/src/server.js",
     "check": "gts check",
     "clean": "gts clean",
