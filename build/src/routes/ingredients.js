@@ -18,18 +18,13 @@ exports.route = express_1.Router();
 exports.route.get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!req.query.contains) {
         // full list of ingredients
-        const ingredients = yield ingredients_1.Ingredient
-            .query()
-            .select('*');
+        const ingredients = yield ingredients_1.Ingredient.query().select('*');
         return res.json(ingredients);
     }
     else {
         // autocomplete
         console.log(`%${req.query.contains}%`);
-        const ingredients = yield ingredients_1.Ingredient
-            .query()
-            .select('*')
-            .where('name', 'like', `%${req.query.contains}%`);
+        const ingredients = yield ingredients_1.Ingredient.query().select('*').where('name', 'like', `%${req.query.contains}%`);
         return res.json(ingredients);
     }
 }));
@@ -37,7 +32,7 @@ exports.route.post('/new', (req, res) => __awaiter(this, void 0, void 0, functio
     if (!ramda_1.default.has('body', req) || !ramda_1.default.has('name', req.body)) {
         return res.json({ err: 'No ingredient information provided.' });
     }
-    const name = req.body.name.trim();
+    const name = req.body.name.trim().toLowerCase();
     if (ramda_1.default.isEmpty(name)) {
         return res.json({ err: 'Empty ingredient name.' });
     }

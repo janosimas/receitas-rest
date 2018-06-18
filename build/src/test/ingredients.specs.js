@@ -40,6 +40,28 @@ describe('Ingredients', () => {
                 done();
             });
         });
+        it('Register a same ingredient twice.', (done) => {
+            chai_1.default.request(server_1.server)
+                .post('/ingredients/new')
+                .send({ name: 'Tomato' })
+                .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('name');
+                res.body.should.have.property('id');
+                res.body.name.should.be.eql('Tomato');
+                chai_1.default.request(server_1.server)
+                    .post('/ingredients/new')
+                    .send({ name: 'Tomato' })
+                    .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('err');
+                    res.body.err.should.be.eql('Ingredient already registered.');
+                    done();
+                });
+            });
+        });
     }));
 });
 //# sourceMappingURL=ingredients.specs.js.map
