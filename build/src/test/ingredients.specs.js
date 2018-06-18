@@ -26,39 +26,59 @@ describe('Ingredients', () => {
     afterEach(() => __awaiter(this, void 0, void 0, function* () {
         yield ingredients_1.Ingredient.query().delete();
     }));
+    const nameUpper = 'Tomato';
+    const nameLower = nameUpper.toLowerCase();
     describe('/POST Ingredients', () => __awaiter(this, void 0, void 0, function* () {
         it('Register a new ingredient.', (done) => {
             chai_1.default.request(server_1.server)
                 .post('/ingredients/new')
-                .send({ name: 'Tomato' })
+                .send({ name: nameUpper })
                 .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('name');
                 res.body.should.have.property('id');
-                res.body.name.should.be.eql('Tomato');
+                res.body.name.should.be.eql(nameLower);
                 done();
             });
         });
         it('Register a same ingredient twice.', (done) => {
             chai_1.default.request(server_1.server)
                 .post('/ingredients/new')
-                .send({ name: 'Tomato' })
+                .send({ name: nameUpper })
                 .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('name');
                 res.body.should.have.property('id');
-                res.body.name.should.be.eql('Tomato');
+                res.body.name.should.be.eql(nameLower);
                 chai_1.default.request(server_1.server)
                     .post('/ingredients/new')
-                    .send({ name: 'Tomato' })
+                    .send({ name: nameUpper })
                     .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.should.have.property('err');
-                    res.body.err.should.be.eql('Ingredient already registered.');
+                    res.body.err.should.be.equal('Ingredient already registered.');
                     done();
+                });
+            });
+        });
+        it('List ingredients.', (done) => {
+            chai_1.default.request(server_1.server).get('/ingredients').end((err, res) => {
+                const body = res.body;
+                body.should.be.an('array').that.have.lengthOf(0);
+                chai_1.default.request(server_1.server)
+                    .post('/ingredients/new')
+                    .send({ name: nameUpper })
+                    .end((err, res) => {
+                    chai_1.default.request(server_1.server).get('/ingredients').end((err, res) => {
+                        const body = res.body;
+                        body.should.have.lengthOf(1);
+                        body[0].should.have.property('name');
+                        body[0].name.should.be.equal(nameLower);
+                        done();
+                    });
                 });
             });
         });
