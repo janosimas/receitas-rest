@@ -8,7 +8,6 @@ route.get('/', async (req: Request, res: Response) => {
   if (!req.query.contains) {
     // full list of ingredients
     const ingredients = await Ingredient.query().select('*');
-
     return res.json(ingredients);
   } else {
     // autocomplete

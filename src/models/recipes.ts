@@ -4,6 +4,7 @@ import {Ingredient} from './ingredients';
 export class Recipe extends Model {
   static tableName = 'recipes';
   readonly id!: number;
+  name!: string;
   ingredients!: Ingredient[];
   cookingMethod?: string;
 
