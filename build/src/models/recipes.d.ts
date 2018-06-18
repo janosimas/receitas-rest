@@ -3,6 +3,7 @@ import { Ingredient } from './ingredients';
 export declare class Recipe extends Model {
     static tableName: string;
     readonly id: number;
+    name: string;
     ingredients: Ingredient[];
     cookingMethod?: string;
     static relationMappings: {
