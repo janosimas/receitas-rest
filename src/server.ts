@@ -30,8 +30,8 @@ server.get('/', (req: Request, res: Response) => {
   res.json({version: process.env.npm_package_version});
 });
 
-server.use('/ingredients', ingredientsRoute);
-server.use('/recipes', recipesRoute);
+server.use('/ingredient', ingredientsRoute);
+server.use('/recipe', recipesRoute);
 server.use('/types', typesRoute);
 
 const httpServer = server.listen(process.env.PORT || configJson.port, () => {

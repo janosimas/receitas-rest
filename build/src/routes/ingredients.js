@@ -15,7 +15,7 @@ const express_1 = require("express");
 const ramda_1 = __importDefault(require("ramda"));
 const ingredients_1 = require("../models/ingredients");
 exports.route = express_1.Router();
-exports.route.get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
+exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!req.query.contains) {
         // full list of ingredients
         const ingredients = yield ingredients_1.Ingredient.query().select('*');
@@ -28,7 +28,7 @@ exports.route.get('/', (req, res) => __awaiter(this, void 0, void 0, function* (
         return res.json(ingredients);
     }
 }));
-exports.route.post('/new', (req, res) => __awaiter(this, void 0, void 0, function* () {
+exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!ramda_1.default.has('body', req) || !ramda_1.default.has('name', req.body)) {
         return res.json({ err: 'No ingredient information provided.' });
     }

@@ -31,7 +31,7 @@ describe('recipes', () => {
     describe('/POST recipes', () => __awaiter(this, void 0, void 0, function* () {
         it('Register a new recipe.', (done) => {
             chai_1.default.request(server_1.server)
-                .post('/recipes/new')
+                .post('/recipe')
                 .send({ name: nameUpper })
                 .end((err, res) => {
                 res.should.have.status(200);
@@ -45,7 +45,7 @@ describe('recipes', () => {
         });
         it('Register a same recipe twice.', (done) => {
             chai_1.default.request(server_1.server)
-                .post('/recipes/new')
+                .post('/recipe')
                 .send({ name: nameUpper })
                 .end((err, res) => {
                 res.should.have.status(200);
@@ -55,7 +55,7 @@ describe('recipes', () => {
                 res.body.should.have.property('id');
                 res.body.name.should.be.eql(nameLower);
                 chai_1.default.request(server_1.server)
-                    .post('/recipes/new')
+                    .post('/recipe')
                     .send({ name: nameUpper })
                     .end((err, res) => {
                     res.should.have.status(200);
@@ -67,14 +67,14 @@ describe('recipes', () => {
             });
         });
         it('List recipes.', (done) => {
-            chai_1.default.request(server_1.server).get('/recipes').end((err, res) => {
+            chai_1.default.request(server_1.server).get('/recipe/list').end((err, res) => {
                 const body = res.body;
                 body.should.be.an('array').that.have.lengthOf(0);
                 chai_1.default.request(server_1.server)
-                    .post('/recipes/new')
+                    .post('/recipe')
                     .send({ name: nameUpper })
                     .end((err, res) => {
-                    chai_1.default.request(server_1.server).get('/recipes').end((err, res) => {
+                    chai_1.default.request(server_1.server).get('/recipe/list').end((err, res) => {
                         const body = res.body;
                         body.should.have.lengthOf(1);
                         body[0].should.have.property('name');

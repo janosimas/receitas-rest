@@ -26,7 +26,7 @@ describe('recipes', () => {
   describe('/POST recipes', async () => {
     it('Register a new recipe.', (done) => {
       chai.request(server)
-          .post('/recipes/new')
+          .post('/recipe')
           .send({name: nameUpper})
           .end((err, res) => {
             res.should.have.status(200);
@@ -41,7 +41,7 @@ describe('recipes', () => {
 
     it('Register a same recipe twice.', (done) => {
       chai.request(server)
-          .post('/recipes/new')
+          .post('/recipe')
           .send({name: nameUpper})
           .end((err, res) => {
             res.should.have.status(200);
@@ -52,7 +52,7 @@ describe('recipes', () => {
             res.body.name.should.be.eql(nameLower);
 
             chai.request(server)
-                .post('/recipes/new')
+                .post('/recipe')
                 .send({name: nameUpper})
                 .end((err, res) => {
                   res.should.have.status(200);
@@ -65,14 +65,14 @@ describe('recipes', () => {
     });
 
     it('List recipes.', (done) => {
-      chai.request(server).get('/recipes').end((err, res) => {
+      chai.request(server).get('/recipe/list').end((err, res) => {
         const body = res.body;
         body.should.be.an('array').that.have.lengthOf(0);
         chai.request(server)
-            .post('/recipes/new')
+            .post('/recipe')
             .send({name: nameUpper})
             .end((err, res) => {
-              chai.request(server).get('/recipes').end((err, res) => {
+              chai.request(server).get('/recipe/list').end((err, res) => {
                 const body = res.body;
                 body.should.have.lengthOf(1);
                 body[0].should.have.property('name');

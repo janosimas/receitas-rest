@@ -6,7 +6,7 @@ import {Recipe} from '../models/recipes';
 
 export const route = Router();
 
-route.get('/', async (req: Request, res: Response) => {
+route.get('/list', async (req: Request, res: Response) => {
   if (!req.query.contains) {
     // full list of recipes
     const recipes = await Recipe.query().select('*');
@@ -20,7 +20,7 @@ route.get('/', async (req: Request, res: Response) => {
   }
 });
 
-route.post('/new', async (req: Request, res: Response) => {
+route.post('/', async (req: Request, res: Response) => {
   if (!R.has('body', req) || !R.has('name', req.body)) {
     return res.json({err: 'No ingredient information provided.'});
   }

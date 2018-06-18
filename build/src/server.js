@@ -22,8 +22,8 @@ exports.server.use(morgan('combined'));
 exports.server.get('/', (req, res) => {
     res.json({ version: process.env.npm_package_version });
 });
-exports.server.use('/ingredients', ingredients_1.route);
-exports.server.use('/recipes', recipes_1.route);
+exports.server.use('/ingredient', ingredients_1.route);
+exports.server.use('/recipe', recipes_1.route);
 exports.server.use('/types', types_1.route);
 const httpServer = exports.server.listen(process.env.PORT || config_json_1.config.port, () => {
     let address;

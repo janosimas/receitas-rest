@@ -31,7 +31,7 @@ describe('Ingredients', () => {
     describe('/POST Ingredients', () => __awaiter(this, void 0, void 0, function* () {
         it('Register a new ingredient.', (done) => {
             chai_1.default.request(server_1.server)
-                .post('/ingredients/new')
+                .post('/ingredient')
                 .send({ name: nameUpper })
                 .end((err, res) => {
                 res.should.have.status(200);
@@ -44,7 +44,7 @@ describe('Ingredients', () => {
         });
         it('Register a same ingredient twice.', (done) => {
             chai_1.default.request(server_1.server)
-                .post('/ingredients/new')
+                .post('/ingredient')
                 .send({ name: nameUpper })
                 .end((err, res) => {
                 res.should.have.status(200);
@@ -53,7 +53,7 @@ describe('Ingredients', () => {
                 res.body.should.have.property('id');
                 res.body.name.should.be.eql(nameLower);
                 chai_1.default.request(server_1.server)
-                    .post('/ingredients/new')
+                    .post('/ingredient')
                     .send({ name: nameUpper })
                     .end((err, res) => {
                     res.should.have.status(200);
@@ -65,14 +65,14 @@ describe('Ingredients', () => {
             });
         });
         it('List ingredients.', (done) => {
-            chai_1.default.request(server_1.server).get('/ingredients').end((err, res) => {
+            chai_1.default.request(server_1.server).get('/ingredient/list').end((err, res) => {
                 const body = res.body;
                 body.should.be.an('array').that.have.lengthOf(0);
                 chai_1.default.request(server_1.server)
-                    .post('/ingredients/new')
+                    .post('/ingredient')
                     .send({ name: nameUpper })
                     .end((err, res) => {
-                    chai_1.default.request(server_1.server).get('/ingredients').end((err, res) => {
+                    chai_1.default.request(server_1.server).get('/ingredient/list').end((err, res) => {
                         const body = res.body;
                         body.should.have.lengthOf(1);
                         body[0].should.have.property('name');

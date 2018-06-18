@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ramda_1 = __importDefault(require("ramda"));
-const recipes_1 = require("../models/recipes");
 const ingredients_1 = require("../models/ingredients");
+const recipes_1 = require("../models/recipes");
 exports.route = express_1.Router();
-exports.route.get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
+exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!req.query.contains) {
         // full list of recipes
         const recipes = yield recipes_1.Recipe.query().select('*');
@@ -29,7 +29,7 @@ exports.route.get('/', (req, res) => __awaiter(this, void 0, void 0, function* (
         return res.json(recipes);
     }
 }));
-exports.route.post('/new', (req, res) => __awaiter(this, void 0, void 0, function* () {
+exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!ramda_1.default.has('body', req) || !ramda_1.default.has('name', req.body)) {
         return res.json({ err: 'No ingredient information provided.' });
     }
@@ -47,7 +47,9 @@ exports.route.post('/new', (req, res) => __awaiter(this, void 0, void 0, functio
     }
     const ingredientsId = req.body.ingredients || [];
     const ingredients = yield ingredients_1.Ingredient.query().select('*').whereIn('id', ingredientsId);
-    const recipes = yield recipes_1.Recipe.query().insert({ name, cookingMethod, ingredients }).skipUndefined();
+    const recipes = yield recipes_1.Recipe.query()
+        .insert({ name, cookingMethod, ingredients })
+        .skipUndefined();
     return res.json(recipes);
 }));
 //# sourceMappingURL=recipes.js.map
