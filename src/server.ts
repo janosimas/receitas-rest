@@ -1,6 +1,7 @@
 'use strict';
 
 import express, {Response, Request} from 'express';
+import cors from "cors";
 import bodyParser from 'body-parser';
 const morgan = require('morgan');
 
@@ -23,6 +24,7 @@ Model.knex(knex);
 
 export const server = express();
 
+server.use(cors());
 server.use(bodyParser.json({limit: configJson.bodyLimit}));
 server.use(morgan('combined'));
 
