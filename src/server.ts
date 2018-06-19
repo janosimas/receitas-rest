@@ -1,7 +1,7 @@
 'use strict';
 
 import express, {Response, Request} from 'express';
-import cors from "cors";
+import cors from 'cors';
 import bodyParser from 'body-parser';
 const morgan = require('morgan');
 
