@@ -13,19 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ramda_1 = __importDefault(require("ramda"));
-const ingredients_1 = require("../models/ingredients");
-const recipes_1 = require("../models/recipes");
+const ingredientModel_1 = require("../models/ingredientModel");
+const recipeModel_1 = require("../models/recipeModel");
 exports.route = express_1.Router();
 exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!req.query.contains) {
         // full list of recipes
-        const recipes = yield recipes_1.Recipe.query().select('*');
+        const recipes = yield recipeModel_1.RecipeModel.query().select('*');
         return res.json(recipes);
     }
     else {
         // autocomplete
         console.log(`%${req.query.contains}%`);
-        const recipes = yield recipes_1.Recipe.query().select('*').where('name', 'like', `%${req.query.contains}%`);
+        const recipes = yield recipeModel_1.RecipeModel.query().select('*').where('name', 'like', `%${req.query.contains}%`);
         return res.json(recipes);
     }
 }));
@@ -37,7 +37,7 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     if (ramda_1.default.isEmpty(name)) {
         return res.json({ err: 'Empty recipe name.' });
     }
-    const hasName = yield recipes_1.Recipe.query().select('*').where({ name });
+    const hasName = yield recipeModel_1.RecipeModel.query().select('*').where({ name });
     if (!ramda_1.default.isEmpty(hasName)) {
         return res.json({ err: 'Recipe already registered.' });
     }
@@ -45,9 +45,13 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     if (!ramda_1.default.isNil(cookingMethod)) {
         cookingMethod = cookingMethod.trim().toLowerCase();
     }
-    const ingredientsId = req.body.ingredients || [];
-    const ingredients = yield ingredients_1.Ingredient.query().select('*').whereIn('id', ingredientsId);
-    const recipes = yield recipes_1.Recipe.query()
+    let ingredients = [];
+    if (!ramda_1.default.isNil(req.body.ingredients)) {
+        ingredients = req.body.ingredients.map((ingredient) => {
+            return new ingredientModel_1.IngredientModel(ingredient);
+        });
+    }
+    const recipes = yield recipeModel_1.RecipeModel.query()
         .insert({ name, cookingMethod, ingredients })
         .skipUndefined();
     return res.json(recipes);

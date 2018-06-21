@@ -14,17 +14,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Require the dev-dependencies
 const chai_1 = __importDefault(require("chai"));
 const chai_http_1 = __importDefault(require("chai-http"));
-const recipes_1 = require("../models/recipes");
+const recipeModel_1 = require("../models/recipeModel");
 const server_1 = require("../server");
 process.env.NODE_ENV = 'development';
 const should = chai_1.default.should();
 chai_1.default.use(chai_http_1.default);
 describe('recipes', () => {
     before(() => __awaiter(this, void 0, void 0, function* () {
-        yield recipes_1.Recipe.query().delete();
+        yield recipeModel_1.RecipeModel.query().delete();
     }));
     afterEach(() => __awaiter(this, void 0, void 0, function* () {
-        yield recipes_1.Recipe.query().delete();
+        yield recipeModel_1.RecipeModel.query().delete();
     }));
     const nameUpper = 'Tomato Salad';
     const nameLower = nameUpper.toLowerCase();

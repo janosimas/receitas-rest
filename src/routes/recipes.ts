@@ -1,20 +1,20 @@
 import {Request, Response, Router} from 'express';
 import R from 'ramda';
 
-import {Ingredient} from '../models/ingredients';
-import {Recipe} from '../models/recipes';
+import {IngredientModel} from '../models/ingredientModel';
+import {RecipeModel} from '../models/recipeModel';
 
 export const route = Router();
 
 route.get('/list', async (req: Request, res: Response) => {
   if (!req.query.contains) {
     // full list of recipes
-    const recipes = await Recipe.query().select('*');
+    const recipes = await RecipeModel.query().select('*');
     return res.json(recipes);
   } else {
     // autocomplete
     console.log(`%${req.query.contains}%`);
-    const recipes = await Recipe.query().select('*').where(
+    const recipes = await RecipeModel.query().select('*').where(
         'name', 'like', `%${req.query.contains}%`);
     return res.json(recipes);
   }
@@ -29,7 +29,7 @@ route.post('/', async (req: Request, res: Response) => {
     return res.json({err: 'Empty recipe name.'});
   }
 
-  const hasName = await Recipe.query().select('*').where({name});
+  const hasName = await RecipeModel.query().select('*').where({name});
   if (!R.isEmpty(hasName)) {
     return res.json({err: 'Recipe already registered.'});
   }
@@ -39,11 +39,14 @@ route.post('/', async (req: Request, res: Response) => {
     cookingMethod = cookingMethod.trim().toLowerCase();
   }
 
-  const ingredientsId: number[] = req.body.ingredients || [];
-  const ingredients: Ingredient[] =
-      await Ingredient.query().select('*').whereIn('id', ingredientsId);
+  let ingredients: IngredientModel[] = [];
+  if (!R.isNil(req.body.ingredients)) {
+    ingredients = req.body.ingredients.map((ingredient: string) => {
+      return new IngredientModel(ingredient);
+    });
+  }
 
-  const recipes = await Recipe.query()
+  const recipes = await RecipeModel.query()
                       .insert({name, cookingMethod, ingredients})
                       .skipUndefined();
 

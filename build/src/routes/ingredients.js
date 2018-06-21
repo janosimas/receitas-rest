@@ -28,17 +28,38 @@ exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, functio
         return res.json(ingredients);
     }
 }));
+exports.route.get('/:id', (req, res) => __awaiter(this, void 0, void 0, function* () {
+    const id = Number(req.param('id', undefined));
+    if (ramda_1.default.isNil(id)) {
+        return res.json({
+            error: 'No ingredient id provided.'
+        });
+    }
+    // full list of ingredients
+    const ingredients = yield ingredients_1.Ingredient
+        .query()
+        .select('*')
+        .where('id', '=', id);
+    if (ramda_1.default.isEmpty(ingredients)) {
+        return res.json({
+            error: 'No ingredient found with given id.'
+        });
+    }
+    else {
+        return res.json(ingredients[0]);
+    }
+}));
 exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!ramda_1.default.has('body', req) || !ramda_1.default.has('name', req.body)) {
-        return res.json({ err: 'No ingredient information provided.' });
+        return res.json({ error: 'No ingredient information provided.' });
     }
     const name = req.body.name.trim().toLowerCase();
     if (ramda_1.default.isEmpty(name)) {
-        return res.json({ err: 'Empty ingredient name.' });
+        return res.json({ error: 'Empty ingredient name.' });
     }
     const hasName = yield ingredients_1.Ingredient.query().select('*').where({ name });
     if (!ramda_1.default.isEmpty(hasName)) {
-        return res.json({ err: 'Ingredient already registered.' });
+        return res.json({ error: 'Ingredient already registered.' });
     }
     const ingredient = yield ingredients_1.Ingredient.query().insert({ name });
     return res.json(ingredient);

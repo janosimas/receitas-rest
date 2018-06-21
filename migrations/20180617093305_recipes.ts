@@ -1,6 +1,6 @@
 import Knex, { CreateTableBuilder } from "knex";
 
-exports.up = function (knex: Knex): Promise<any> {
+exports.up = (knex: Knex): Promise<void[]> => {
   return Promise.all([
     knex.schema.createTable('recipes', (table: CreateTableBuilder) => {
       table.increments('id').primary().unsigned();
@@ -9,13 +9,13 @@ exports.up = function (knex: Knex): Promise<any> {
     }),
     knex.schema.createTable('recipe-ingredients', (table: CreateTableBuilder) => {
       table.increments('id').primary().unsigned();
-      table.integer('ingredientId').references('ingredients.id').notNullable();
+      table.string('ingredient').notNullable();
       table.integer('recipeId').references('recipes.id').notNullable();
     })
   ]);
 };
 
-exports.down = function (knex: Knex): Promise<any> {
+exports.down = (knex: Knex): Promise<void[]> => {
   return Promise.all([
     knex.schema.dropTableIfExists('recipe-ingredients'),
     knex.schema.dropTableIfExists('recipes')

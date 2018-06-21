@@ -10,7 +10,6 @@ import {Model} from 'objection';
 
 import {config as configJson} from './config.json';
 
-import {route as ingredientsRoute} from './routes/ingredients';
 import {route as recipesRoute} from './routes/recipes';
 import {route as typesRoute} from './routes/types';
 import {AddressInfo} from 'net';
@@ -32,7 +31,6 @@ server.get('/', (req: Request, res: Response) => {
   res.json({version: process.env.npm_package_version});
 });
 
-server.use('/ingredient', ingredientsRoute);
 server.use('/recipe', recipesRoute);
 server.use('/types', typesRoute);
 

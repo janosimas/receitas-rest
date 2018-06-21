@@ -2,7 +2,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
-import {Recipe} from '../models/recipes';
+import {RecipeModel} from '../models/recipeModel';
 import {server} from '../server';
 
 process.env.NODE_ENV = 'development';
@@ -13,11 +13,11 @@ chai.use(chaiHttp);
 
 describe('recipes', () => {
   before(async () => {  // Before tests we empty the database
-    await Recipe.query().delete();
+    await RecipeModel.query().delete();
   });
 
   afterEach(async () => {  // After each test we empty the database
-    await Recipe.query().delete();
+    await RecipeModel.query().delete();
   });
 
   const nameUpper = 'Tomato Salad';
