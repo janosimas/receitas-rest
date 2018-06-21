@@ -42,7 +42,7 @@ route.post('/', async (req: Request, res: Response) => {
   let ingredients: IngredientModel[] = [];
   if (!R.isNil(req.body.ingredients)) {
     ingredients = req.body.ingredients.map((ingredient: string) => {
-      return new IngredientModel(ingredient);
+      return new IngredientModel(ingredient.trim().toLowerCase());
     });
   }
 

@@ -28,8 +28,10 @@ describe('recipes', () => {
     }));
     const nameUpper = 'Tomato Salad';
     const nameLower = nameUpper.toLowerCase();
+    const ingredientsUpper = ['Cenoura ', 'Tomate', 'oregano'];
+    const ingredientsLower = [{ name: 'cenoura' }, { name: 'tomate' }, { name: 'oregano' }];
     describe('/POST recipes', () => __awaiter(this, void 0, void 0, function* () {
-        it('Register a new recipe.', (done) => {
+        it('Register a new recipe with no ingredients.', (done) => {
             chai_1.default.request(server_1.server)
                 .post('/recipe')
                 .send({ name: nameUpper })
@@ -40,6 +42,21 @@ describe('recipes', () => {
                 res.body.should.have.property('ingredients');
                 res.body.should.have.property('id');
                 res.body.name.should.be.eql(nameLower);
+                done();
+            });
+        });
+        it('Register a new recipe with ingredients.', (done) => {
+            chai_1.default.request(server_1.server)
+                .post('/recipe')
+                .send({ name: nameUpper, ingredients: ingredientsUpper })
+                .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('name');
+                res.body.should.have.property('ingredients');
+                res.body.should.have.property('id');
+                res.body.name.should.be.eql(nameLower);
+                res.body.ingredients.should.be.eql(ingredientsLower);
                 done();
             });
         });

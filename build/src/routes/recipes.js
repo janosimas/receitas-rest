@@ -48,7 +48,7 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     let ingredients = [];
     if (!ramda_1.default.isNil(req.body.ingredients)) {
         ingredients = req.body.ingredients.map((ingredient) => {
-            return new ingredientModel_1.IngredientModel(ingredient);
+            return new ingredientModel_1.IngredientModel(ingredient.trim().toLowerCase());
         });
     }
     const recipes = yield recipeModel_1.RecipeModel.query()
