@@ -10,9 +10,15 @@ module.exports = {
         },
         useNullAsDefault: true
     },
-    /**
-     * @todo Assign a non-root user with a proper password before deploying!
-     */
+    staging: {
+        client: 'sqlite3',
+        connection: { filename: './mydb.sqlite' },
+        migrations: {
+            directory: './migrations',
+            extensions: ['.ts'],
+        },
+        useNullAsDefault: true
+    },
     test: {
         client: 'sqlite3',
         connection: { filename: './test.sqlite' },
@@ -22,9 +28,6 @@ module.exports = {
         },
         useNullAsDefault: true
     },
-    /**
-     * @todo Assign a non-root user with a proper password before deploying!
-     */
     production: {
         client: 'sqlite3',
         connection: { filename: './recipes.sqlite' },
