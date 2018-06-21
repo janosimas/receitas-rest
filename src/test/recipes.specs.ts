@@ -5,7 +5,7 @@ import chaiHttp from 'chai-http';
 import {RecipeModel} from '../models/recipeModel';
 import {server} from '../server';
 
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'test';
 
 const should = chai.should();
 

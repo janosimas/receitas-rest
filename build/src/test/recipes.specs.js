@@ -16,7 +16,7 @@ const chai_1 = __importDefault(require("chai"));
 const chai_http_1 = __importDefault(require("chai-http"));
 const recipeModel_1 = require("../models/recipeModel");
 const server_1 = require("../server");
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'test';
 const should = chai_1.default.should();
 chai_1.default.use(chai_http_1.default);
 describe('recipes', () => {
