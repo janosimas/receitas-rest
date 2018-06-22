@@ -13,47 +13,65 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ramda_1 = __importDefault(require("ramda"));
-const ingredientModel_1 = require("../models/ingredientModel");
-const recipeModel_1 = require("../models/recipeModel");
+const typeorm_1 = require("typeorm");
+const IngredientModel_1 = require("../models/IngredientModel");
+const RecipeModel_1 = require("../models/RecipeModel");
 exports.route = express_1.Router();
 exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!req.query.contains) {
         // full list of recipes
-        const recipes = yield recipeModel_1.RecipeModel.query().select('*');
-        return res.json(recipes);
+        typeorm_1.getConnection()
+            .getRepository(RecipeModel_1.RecipeModel)
+            .find({ relations: ['ingredients'] })
+            .then(recipes => res.json(recipes))
+            .catch(err => res.status(400).json(err));
     }
     else {
         // autocomplete
-        console.log(`%${req.query.contains}%`);
-        const recipes = yield recipeModel_1.RecipeModel.query().select('*').where('name', 'like', `%${req.query.contains}%`);
-        return res.json(recipes);
+        typeorm_1.getConnection()
+            .getRepository(RecipeModel_1.RecipeModel)
+            .createQueryBuilder('recipe')
+            .where(`name like %${req.query.contains}%`)
+            .innerJoin('recipe.ingredients', 'ingredients')
+            .getMany()
+            .then(recipes => res.json(recipes))
+            .catch(err => res.status(400).json(err));
     }
 }));
 exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!ramda_1.default.has('body', req) || !ramda_1.default.has('name', req.body)) {
-        return res.json({ err: 'No ingredient information provided.' });
+        return res.status(400).json({ err: 'No ingredient information provided.' });
     }
     const name = req.body.name.trim().toLowerCase();
     if (ramda_1.default.isEmpty(name)) {
-        return res.json({ err: 'Empty recipe name.' });
+        return res.status(400).json({ err: 'Empty recipe name.' });
     }
-    const hasName = yield recipeModel_1.RecipeModel.query().select('*').where({ name });
-    if (!ramda_1.default.isEmpty(hasName)) {
-        return res.json({ err: 'Recipe already registered.' });
-    }
+    const hasName = true; // await RecipeModel.query().select('*').where({name});
+    // if (!R.isEmpty(hasName)) {
+    //   return res.status(400).json({err: 'Recipe already registered.'});
+    // }
     let cookingMethod = req.body.cookingMethod;
     if (!ramda_1.default.isNil(cookingMethod)) {
         cookingMethod = cookingMethod.trim().toLowerCase();
     }
-    let ingredients = [];
+    let ingredients = new Promise(() => []);
     if (!ramda_1.default.isNil(req.body.ingredients)) {
-        ingredients = req.body.ingredients.map((ingredient) => {
-            return new ingredientModel_1.IngredientModel(ingredient.trim().toLowerCase());
-        });
+        ingredients = Promise.all(req.body.ingredients.map((ingredientJson) => __awaiter(this, void 0, void 0, function* () {
+            const ingredientToInsert = new IngredientModel_1.IngredientModel();
+            ingredientToInsert.name = ingredientJson.name.trim().toLowerCase();
+            const ingredient = yield typeorm_1.getConnection().manager.save(ingredientToInsert);
+            return ingredient;
+        })));
     }
-    const recipes = yield recipeModel_1.RecipeModel.query()
-        .insert({ name, cookingMethod, ingredients })
-        .skipUndefined();
-    return res.json(recipes);
+    ingredients.then(ingredients => {
+        const recipe = new RecipeModel_1.RecipeModel();
+        recipe.name = name;
+        recipe.ingredients = ingredients;
+        typeorm_1.getConnection()
+            .manager.save(recipe)
+            .then(recipe => res.json(recipe))
+            .catch(err => res.status(400).json({ error: err }));
+    });
+    return;
 }));
 //# sourceMappingURL=recipes.js.map

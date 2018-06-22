@@ -1,1 +1,2 @@
-export declare const server: import("express-serve-static-core").Express;
+import 'reflect-metadata';
+export declare const server: Promise<void | import("express-serve-static-core").Express>;
