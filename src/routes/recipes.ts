@@ -37,18 +37,12 @@ route.post('/', async (req: Request, res: Response) => {
     return res.status(400).json({err: 'Empty recipe name.'});
   }
 
-  const hasName = true;  // await RecipeModel.query().select('*').where({name});
-  // if (!R.isEmpty(hasName)) {
-  //   return res.status(400).json({err: 'Recipe already registered.'});
-  // }
-
-  let cookingMethod: string = req.body.cookingMethod;
-  if (!R.isNil(cookingMethod)) {
-    cookingMethod = cookingMethod.trim().toLowerCase();
+  const hasName = await getConnection().getRepository(RecipeModel).find({name});
+  if (!R.isEmpty(hasName)) {
+    return res.status(400).json({err: 'Recipe already registered.'});
   }
 
-  let ingredients: Promise<IngredientModel[]> =
-      new Promise<IngredientModel[]>(() => []);
+  let ingredients: Promise<IngredientModel[]>|undefined;
   if (!R.isNil(req.body.ingredients)) {
     ingredients = Promise.all(req.body.ingredients.map(
         async (ingredientJson: InterfaceIngredientModel) => {
@@ -61,16 +55,27 @@ route.post('/', async (req: Request, res: Response) => {
         }));
   }
 
-  ingredients.then(ingredients => {
-    const recipe = new RecipeModel();
-    recipe.name = name;
-    recipe.ingredients = ingredients;
+  const recipe = new RecipeModel();
+  recipe.name = name;
+
+  // TODO: how to unify this code?
+  if (!R.isNil(ingredients)) {
+    ingredients.then(ingredients => {
+      recipe.ingredients = ingredients;
+
+      getConnection()
+          .manager.save(recipe)
+          .then(recipe => res.json(recipe))
+          .catch(err => res.status(400).json({error: err}));
+    });
+  } else {
+    recipe.ingredients = [];
 
     getConnection()
         .manager.save(recipe)
         .then(recipe => res.json(recipe))
         .catch(err => res.status(400).json({error: err}));
-  });
+  }
 
   return;
 });

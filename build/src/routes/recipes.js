@@ -46,15 +46,11 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     if (ramda_1.default.isEmpty(name)) {
         return res.status(400).json({ err: 'Empty recipe name.' });
     }
-    const hasName = true; // await RecipeModel.query().select('*').where({name});
-    // if (!R.isEmpty(hasName)) {
-    //   return res.status(400).json({err: 'Recipe already registered.'});
-    // }
-    let cookingMethod = req.body.cookingMethod;
-    if (!ramda_1.default.isNil(cookingMethod)) {
-        cookingMethod = cookingMethod.trim().toLowerCase();
+    const hasName = yield typeorm_1.getConnection().getRepository(RecipeModel_1.RecipeModel).find({ name });
+    if (!ramda_1.default.isEmpty(hasName)) {
+        return res.status(400).json({ err: 'Recipe already registered.' });
     }
-    let ingredients = new Promise(() => []);
+    let ingredients;
     if (!ramda_1.default.isNil(req.body.ingredients)) {
         ingredients = Promise.all(req.body.ingredients.map((ingredientJson) => __awaiter(this, void 0, void 0, function* () {
             const ingredientToInsert = new IngredientModel_1.IngredientModel();
@@ -63,15 +59,25 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
             return ingredient;
         })));
     }
-    ingredients.then(ingredients => {
-        const recipe = new RecipeModel_1.RecipeModel();
-        recipe.name = name;
-        recipe.ingredients = ingredients;
+    const recipe = new RecipeModel_1.RecipeModel();
+    recipe.name = name;
+    // TODO: how to unify this code?
+    if (!ramda_1.default.isNil(ingredients)) {
+        ingredients.then(ingredients => {
+            recipe.ingredients = ingredients;
+            typeorm_1.getConnection()
+                .manager.save(recipe)
+                .then(recipe => res.json(recipe))
+                .catch(err => res.status(400).json({ error: err }));
+        });
+    }
+    else {
+        recipe.ingredients = [];
         typeorm_1.getConnection()
             .manager.save(recipe)
             .then(recipe => res.json(recipe))
             .catch(err => res.status(400).json({ error: err }));
-    });
+    }
     return;
 }));
 //# sourceMappingURL=recipes.js.map

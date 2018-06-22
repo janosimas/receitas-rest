@@ -49,6 +49,10 @@ describe('recipes', () => {
                 .post('/recipe')
                 .send({ name: nameUpper })
                 .end((err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done();
+                }
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('name');
@@ -63,6 +67,10 @@ describe('recipes', () => {
                 .post('/recipe')
                 .send({ name: nameUpper, ingredients: ingredientsUpper })
                 .end((err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done();
+                }
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('name');
@@ -81,6 +89,10 @@ describe('recipes', () => {
                 .post('/recipe')
                 .send({ name: nameUpper })
                 .end((err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done();
+                }
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('name');
@@ -91,7 +103,11 @@ describe('recipes', () => {
                     .post('/recipe')
                     .send({ name: nameUpper })
                     .end((err, res) => {
-                    res.should.have.status(200);
+                    if (err) {
+                        console.error(err);
+                        return done();
+                    }
+                    res.should.have.status(400);
                     res.body.should.be.a('object');
                     res.body.should.have.property('err');
                     res.body.err.should.be.equal('Recipe already registered.');
@@ -113,7 +129,8 @@ describe('recipes', () => {
                         body[0].should.have.property('name');
                         body[0].name.should.be.equal(nameLower);
                         let returnedIngredients = body[0].ingredients;
-                        returnedIngredients = R.sortBy(R.prop('name'))(returnedIngredients);
+                        returnedIngredients =
+                            R.sortBy(R.prop('name'))(returnedIngredients);
                         Promise
                             .all(returnedIngredients.map((ingredient, index) => ingredient.name.should.be.equal(ingredientsLower[index].name)))
                             .then(() => done());
