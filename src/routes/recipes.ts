@@ -44,15 +44,20 @@ route.post('/', async (req: Request, res: Response) => {
 
   let ingredients: Promise<IngredientModel[]>|undefined;
   if (!R.isNil(req.body.ingredients)) {
-    ingredients = Promise.all(req.body.ingredients.map(
-        async (ingredientJson: InterfaceIngredientModel) => {
-          const ingredientToInsert = new IngredientModel();
-          ingredientToInsert.name = ingredientJson.name.trim().toLowerCase();
+    ingredients = Promise.all(
+        R.filter(
+             (val: InterfaceIngredientModel) =>
+                 R.not(R.isEmpty(val.name.trim())),
+             req.body.ingredients)
+            .map(async (ingredientJson: InterfaceIngredientModel) => {
+              const ingredientToInsert = new IngredientModel();
+              ingredientToInsert.name =
+                  ingredientJson.name.trim().toLowerCase();
 
-          const ingredient =
-              await getConnection().manager.save(ingredientToInsert);
-          return ingredient;
-        }));
+              const ingredient =
+                  await getConnection().manager.save(ingredientToInsert);
+              return ingredient;
+            }));
   }
 
   const recipe = new RecipeModel();

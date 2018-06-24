@@ -52,9 +52,11 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     }
     let ingredients;
     if (!ramda_1.default.isNil(req.body.ingredients)) {
-        ingredients = Promise.all(req.body.ingredients.map((ingredientJson) => __awaiter(this, void 0, void 0, function* () {
+        ingredients = Promise.all(ramda_1.default.filter((val) => ramda_1.default.not(ramda_1.default.isEmpty(val.name.trim())), req.body.ingredients)
+            .map((ingredientJson) => __awaiter(this, void 0, void 0, function* () {
             const ingredientToInsert = new IngredientModel_1.IngredientModel();
-            ingredientToInsert.name = ingredientJson.name.trim().toLowerCase();
+            ingredientToInsert.name =
+                ingredientJson.name.trim().toLowerCase();
             const ingredient = yield typeorm_1.getConnection().manager.save(ingredientToInsert);
             return ingredient;
         })));

@@ -86,6 +86,39 @@ describe('recipes', () => {
           });
     });
 
+    it('Register a new recipe with ingredients with empty name.', (done) => {
+      const ingredientsEmpty = ingredientsUpper.slice();
+      ingredientsEmpty.push({name: '   '});
+      ingredientsEmpty.push({name: ''});
+      chai.request(restServer)
+          .post('/recipe')
+          .send({name: nameUpper, ingredients: ingredientsUpper})
+          .end((err, res) => {
+            if (err) {
+              console.error(err);
+              return done();
+            }
+
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('name');
+            res.body.should.have.property('ingredients');
+            res.body.should.have.property('id');
+            res.body.name.should.be.eql(nameLower);
+
+            let returnedIngredients: InterfaceIngredientModel[] =
+                res.body.ingredients;
+            returnedIngredients = R.sortBy(R.prop('name'))(returnedIngredients);
+
+            Promise
+                .all(returnedIngredients.map(
+                    (ingredient: {name: string}, index: number) =>
+                        ingredient.name.should.be.equal(
+                            ingredientsLower[index].name)))
+                .then(() => done());
+          });
+    });
+
     it('Register a same recipe twice.', (done) => {
       chai.request(restServer)
           .post('/recipe')
