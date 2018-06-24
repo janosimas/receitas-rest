@@ -18,9 +18,17 @@ __decorate([
     __metadata("design:type", Number)
 ], IngredientModel.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column('text'),
+    typeorm_1.Column({ type: 'text', nullable: false }),
     __metadata("design:type", String)
 ], IngredientModel.prototype, "name", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'double', nullable: true }),
+    __metadata("design:type", Number)
+], IngredientModel.prototype, "quantity", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'text', nullable: true }),
+    __metadata("design:type", String)
+], IngredientModel.prototype, "unit", void 0);
 __decorate([
     typeorm_1.ManyToOne(type => RecipeModel_1.RecipeModel, recipe => recipe.ingredients),
     __metadata("design:type", RecipeModel_1.RecipeModel)
