@@ -18,9 +18,17 @@ __decorate([
     __metadata("design:type", Number)
 ], RecipeModel.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column('text'),
+    typeorm_1.Column({ type: 'text', unique: true }),
     __metadata("design:type", String)
 ], RecipeModel.prototype, "name", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'text', nullable: true }),
+    __metadata("design:type", String)
+], RecipeModel.prototype, "cookingMethod", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'text', nullable: true }),
+    __metadata("design:type", String)
+], RecipeModel.prototype, "description", void 0);
 __decorate([
     typeorm_1.OneToMany(type => IngredientModel_1.IngredientModel, ingredient => ingredient.recipe, {
         cascade: true,

@@ -50,6 +50,8 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     if (!ramda_1.default.isEmpty(hasName)) {
         return res.status(400).json({ err: 'Recipe already registered.' });
     }
+    const cookingMethod = ramda_1.default.isNil(req.body.cookingMethod) ? undefined : req.body.cookingMethod.trim().toLowerCase();
+    const description = ramda_1.default.isNil(req.body.description) ? undefined : req.body.description.trim().toLowerCase();
     let ingredients;
     if (!ramda_1.default.isNil(req.body.ingredients)) {
         ingredients = Promise.all(ramda_1.default.filter((val) => ramda_1.default.not(ramda_1.default.isEmpty(val.name.trim())), req.body.ingredients)
@@ -63,6 +65,8 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
     }
     const recipe = new RecipeModel_1.RecipeModel();
     recipe.name = name;
+    recipe.cookingMethod = cookingMethod;
+    recipe.description = description;
     // TODO: how to unify this code?
     if (!ramda_1.default.isNil(ingredients)) {
         ingredients.then(ingredients => {

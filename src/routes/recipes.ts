@@ -42,6 +42,10 @@ route.post('/', async (req: Request, res: Response) => {
     return res.status(400).json({err: 'Recipe already registered.'});
   }
 
+  const cookingMethod: string = R.isNil(req.body.cookingMethod) ? undefined : req.body.cookingMethod.trim().toLowerCase();
+  const description: string = R.isNil(req.body.description) ? undefined : req.body.description.trim().toLowerCase();
+  
+
   let ingredients: Promise<IngredientModel[]>|undefined;
   if (!R.isNil(req.body.ingredients)) {
     ingredients = Promise.all(
@@ -62,6 +66,8 @@ route.post('/', async (req: Request, res: Response) => {
 
   const recipe = new RecipeModel();
   recipe.name = name;
+  recipe.cookingMethod = cookingMethod;
+  recipe.description = description;
 
   // TODO: how to unify this code?
   if (!R.isNil(ingredients)) {

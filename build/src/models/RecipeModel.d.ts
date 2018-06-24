@@ -5,7 +5,9 @@ export interface InterfaceRecipeModel {
     ingredients: InterfaceIngredientModel[];
 }
 export declare class RecipeModel {
-    id?: number;
-    name?: string;
+    id: number;
+    name: string;
+    cookingMethod?: string;
+    description?: string;
     ingredients?: IngredientModel[];
 }

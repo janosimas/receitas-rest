@@ -1,6 +1,6 @@
-import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import {IngredientModel, InterfaceIngredientModel} from './IngredientModel';
+import { IngredientModel, InterfaceIngredientModel } from './IngredientModel';
 
 export interface InterfaceRecipeModel {
   id: number;
@@ -10,9 +10,11 @@ export interface InterfaceRecipeModel {
 
 @Entity()
 export class RecipeModel {
-  @PrimaryGeneratedColumn() id?: number;
+  @PrimaryGeneratedColumn() id!: number;
 
-  @Column('text') name?: string;
+  @Column({ type: 'text', unique: true }) name!: string;
+  @Column({ type: 'text', nullable: true }) cookingMethod?: string;
+  @Column({ type: 'text', nullable: true }) description?: string;
 
   @OneToMany(type => IngredientModel, ingredient => ingredient.recipe, {
     cascade: true,
