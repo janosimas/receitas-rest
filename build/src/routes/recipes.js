@@ -31,7 +31,7 @@ exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, functio
         typeorm_1.getConnection()
             .getRepository(RecipeModel_1.RecipeModel)
             .createQueryBuilder('recipe')
-            .where(`name like %${req.query.contains}%`)
+            .where("recipe.name like :text", { text: '%' + req.query.contains + '%' })
             .innerJoin('recipe.ingredients', 'ingredients')
             .getMany()
             .then(recipes => res.json(recipes))

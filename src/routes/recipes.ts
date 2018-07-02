@@ -20,7 +20,7 @@ route.get('/list', async (req: Request, res: Response) => {
     getConnection()
       .getRepository(RecipeModel)
       .createQueryBuilder('recipe')
-      .where(`name like %${req.query.contains}%`)
+      .where("recipe.name like :text", { text: '%' + req.query.contains + '%' })
       .innerJoin('recipe.ingredients', 'ingredients')
       .getMany()
       .then(recipes => res.json(recipes))
