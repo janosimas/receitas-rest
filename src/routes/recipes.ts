@@ -28,18 +28,26 @@ route.get('/list', async (req: Request, res: Response) => {
   }
 });
 
+// FIXME: post is being used for new recipes and updating recipes
 route.post('/', async (req: Request, res: Response) => {
   if (!R.has('body', req) || !R.has('name', req.body)) {
-    return res.status(400).json({ err: 'No ingredient information provided.' });
+    return res.status(400).json({ error: 'No recipe name provided.' });
   }
   const name: string = req.body.name.trim().toLowerCase();
   if (R.isEmpty(name)) {
-    return res.status(400).json({ err: 'Empty recipe name.' });
+    return res.status(400).json({ error: 'Empty recipe name.' });
   }
 
-  const hasName = await getConnection().getRepository(RecipeModel).find({ name });
-  if (!R.isEmpty(hasName)) {
-    return res.status(400).json({ err: 'Recipe already registered.' });
+  const recipeList = await getConnection().getRepository(RecipeModel).find({ name });
+  if (!R.isEmpty(recipeList)) {
+    if (R.has('id', req.body)) {
+      const recipe = recipeList[0];
+      if (recipe.id !== Number(req.body.id)) {
+        return res.status(400).json({ error: 'Recipe name already in use.' });
+      }
+    } else {
+      return res.status(400).json({ error: 'Recipe already registered.' });
+    }
   }
 
   const cookingMethod: string = R.isNil(req.body.cookingMethod) ? undefined : req.body.cookingMethod.trim().toLowerCase();
@@ -65,10 +73,13 @@ route.post('/', async (req: Request, res: Response) => {
         }));
   }
 
-  const recipe = new RecipeModel();
+  const recipe = R.isEmpty(recipeList) ? new RecipeModel() : recipeList[0];
   recipe.name = name;
   recipe.cookingMethod = cookingMethod;
   recipe.description = description;
+  if (R.has('id', req.body)) {
+    recipe.id = Number(req.body.id);
+  }
 
   // TODO: how to unify this code?
   if (!R.isNil(ingredients)) {

@@ -38,17 +38,26 @@ exports.route.get('/list', (req, res) => __awaiter(this, void 0, void 0, functio
             .catch(err => res.status(400).json(err));
     }
 }));
+// FIXME: post is being used for new recipes and updating recipes
 exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (!ramda_1.default.has('body', req) || !ramda_1.default.has('name', req.body)) {
-        return res.status(400).json({ err: 'No ingredient information provided.' });
+        return res.status(400).json({ error: 'No recipe name provided.' });
     }
     const name = req.body.name.trim().toLowerCase();
     if (ramda_1.default.isEmpty(name)) {
-        return res.status(400).json({ err: 'Empty recipe name.' });
+        return res.status(400).json({ error: 'Empty recipe name.' });
     }
-    const hasName = yield typeorm_1.getConnection().getRepository(RecipeModel_1.RecipeModel).find({ name });
-    if (!ramda_1.default.isEmpty(hasName)) {
-        return res.status(400).json({ err: 'Recipe already registered.' });
+    const recipeList = yield typeorm_1.getConnection().getRepository(RecipeModel_1.RecipeModel).find({ name });
+    if (!ramda_1.default.isEmpty(recipeList)) {
+        if (ramda_1.default.has('id', req.body)) {
+            const recipe = recipeList[0];
+            if (recipe.id !== Number(req.body.id)) {
+                return res.status(400).json({ error: 'Recipe name already in use.' });
+            }
+        }
+        else {
+            return res.status(400).json({ error: 'Recipe already registered.' });
+        }
     }
     const cookingMethod = ramda_1.default.isNil(req.body.cookingMethod) ? undefined : req.body.cookingMethod.trim().toLowerCase();
     const description = ramda_1.default.isNil(req.body.description) ? undefined : req.body.description.trim().toLowerCase();
@@ -64,10 +73,13 @@ exports.route.post('/', (req, res) => __awaiter(this, void 0, void 0, function* 
             return ingredient;
         })));
     }
-    const recipe = new RecipeModel_1.RecipeModel();
+    const recipe = ramda_1.default.isEmpty(recipeList) ? new RecipeModel_1.RecipeModel() : recipeList[0];
     recipe.name = name;
     recipe.cookingMethod = cookingMethod;
     recipe.description = description;
+    if (ramda_1.default.has('id', req.body)) {
+        recipe.id = Number(req.body.id);
+    }
     // TODO: how to unify this code?
     if (!ramda_1.default.isNil(ingredients)) {
         ingredients.then(ingredients => {
