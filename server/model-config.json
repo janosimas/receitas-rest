@@ -34,5 +34,13 @@
   "Role": {
     "dataSource": "db",
     "public": false
+  },
+  "recipe": {
+    "dataSource": "db",
+    "public": true
+  },
+  "ingredient": {
+    "dataSource": "db",
+    "public": false
   }
 }
