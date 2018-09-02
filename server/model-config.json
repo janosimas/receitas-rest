@@ -14,33 +14,33 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "recipesdb"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "recipesdb",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "recipesdb",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "recipesdb",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "recipesdb",
     "public": false
   },
   "recipe": {
-    "dataSource": "db",
+    "dataSource": "recipesdb",
     "public": true
   },
   "ingredient": {
-    "dataSource": "db",
+    "dataSource": "recipesdb",
     "public": false
   }
 }

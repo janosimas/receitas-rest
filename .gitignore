@@ -1,3 +1,4 @@
+*.db
 *.csv
 *.dat
 *.iml

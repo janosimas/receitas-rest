@@ -2,5 +2,10 @@
   "db": {
     "name": "db",
     "connector": "memory"
+  },
+  "recipesdb": {
+    "name": "recipesdb",
+    "connector": "loopback-connector-sqlite3",
+    "file": "recipesdb.db"
   }
 }
